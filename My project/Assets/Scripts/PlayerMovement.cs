@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 gravity;
     public Vector3 playerVelocity;
     public bool groundedPlayer;
+    public bool canDoubleJump = false;
     public float mouseSensitivy = 5.0f;
     private float jumpHeight = 1f;
     private float gravityValue = -9.81f;
@@ -16,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 3.0F;
     private int extraJump;
     public int extraJumpValue;
+    Animator animator;
 
     
  
@@ -23,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         extraJump = extraJumpValue;
+        animator = GetComponent<Animator>();
     }
 
     public void Update()
@@ -69,8 +72,20 @@ public class PlayerMovement : MonoBehaviour
         // Calculate the movement direction based on input and camera orientation
         Vector3 moveDirection = (cameraForward * Input.GetAxis("Vertical")) + (cameraRight * Input.GetAxis("Horizontal"));
  
+        Vector3 movement;
         // Apply the movement direction and speed
-        Vector3 movement = moveDirection.normalized * speed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.LeftShift)){
+            movement = moveDirection.normalized * runSpeed * Time.deltaTime;
+            animator.SetFloat("Speed", 1.0f);
+        }else{
+            if(Input.GetKey(KeyCode.W)){
+                movement = moveDirection.normalized * walkSpeed * Time.deltaTime;
+                animator.SetFloat("Speed", 0.5F);
+            }else{
+                movement = moveDirection.normalized * walkSpeed * Time.deltaTime;
+                animator.SetFloat("Speed", 0f);
+            }
+        }
  
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer)
@@ -84,25 +99,50 @@ public class PlayerMovement : MonoBehaviour
             //     // Dont apply gravity if grounded and not jumping
             //     gravity.y = -1.0f;
             // }
+            animator.SetBool("isGrounded", true);
+            animator.SetBool("doubleJump", false);
             extraJump = extraJumpValue;
             if (Input.GetButtonDown("Jump")){
-            gravity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                
+                gravity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                animator.SetBool("isGrounded", false);
             }else{
                 gravity.y = -1.0f;
             }
         }
-        else if (Input.GetButtonDown("Jump") && extraJump > 0){
+        else if (Input.GetButtonDown("Jump") && canDoubleJump){
                 gravity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-                extraJump--;
+                //extraJump--;
+                animator.SetBool("isGrounded", false);
+                animator.SetBool("doubleJump", true);
+                canDoubleJump = false;
+                transform.position += new Vector3(0, 25, 0);
+                
             }
         else
         {
             // Since there is no physics applied on character controller we have this applies to reapply gravity
             gravity.y += gravityValue * Time.deltaTime;
+            //animator.SetBool("doubleJump", false);
+            
         }
         // Apply gravity and move the character
         playerVelocity = gravity * Time.deltaTime + movement;
+        
         controller.Move(playerVelocity);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+       // Debug.Log("You collided");
+       if (other.tag == "DoubleJump"){
+            canDoubleJump = true;
+            Destroy(other.gameObject);
+       }
+       if (other.tag == "Point"){
+            Debug.Log("Got a Point");
+            Destroy(other.gameObject);
+       }
     }
 
     
