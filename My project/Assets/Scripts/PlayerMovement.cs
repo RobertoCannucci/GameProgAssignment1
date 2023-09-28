@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class PlayerMovement : MonoBehaviour
 {
     public Vector3 gravity;
@@ -17,7 +17,10 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 3.0F;
     private int extraJump;
     public int extraJumpValue;
+    public int pointsValue;
+    public string points;
     Animator animator;
+    public Text scoreText;
 
     
  
@@ -26,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
         extraJump = extraJumpValue;
         animator = GetComponent<Animator>();
+        pointsValue = 0;
+        points = "" + pointsValue;
+
     }
 
     public void Update()
@@ -78,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
             movement = moveDirection.normalized * runSpeed * Time.deltaTime;
             animator.SetFloat("Speed", 1.0f);
         }else{
-            if(Input.GetKey(KeyCode.W)){
+            if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) ){
                 movement = moveDirection.normalized * walkSpeed * Time.deltaTime;
                 animator.SetFloat("Speed", 0.5F);
             }else{
@@ -102,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isGrounded", true);
             animator.SetBool("doubleJump", false);
             extraJump = extraJumpValue;
-            if (Input.GetButtonDown("Jump")){
+            if (Input.GetButton("Jump")){
                 
                 gravity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
                 animator.SetBool("isGrounded", false);
@@ -140,7 +146,10 @@ public class PlayerMovement : MonoBehaviour
             Destroy(other.gameObject);
        }
        if (other.tag == "Point"){
-            Debug.Log("Got a Point");
+            //Debug.Log("Got a Point");
+            pointsValue += 10;
+            points = "" + pointsValue;
+            scoreText.text = points;
             Destroy(other.gameObject);
        }
     }
