@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public string points;
     Animator animator;
     public Text scoreText;
+    public GameManager manager;
 
     
  
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         pointsValue = 0;
         points = "" + pointsValue;
+        manager = GameManager.Instance;
 
     }
 
@@ -122,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("isGrounded", false);
                 animator.SetBool("doubleJump", true);
                 canDoubleJump = false;
-                transform.position += new Vector3(0, 25, 0);
+                //transform.position += new Vector3(0, 25, 0);
                 
             }
         else
@@ -143,14 +145,16 @@ public class PlayerMovement : MonoBehaviour
        // Debug.Log("You collided");
        if (other.tag == "DoubleJump"){
             canDoubleJump = true;
-            Destroy(other.gameObject);
+            manager.explode();
+            other.gameObject.SetActive(false);
+            manager.AddPowerUp(other.gameObject);
        }
        if (other.tag == "Point"){
             //Debug.Log("Got a Point");
-            pointsValue += 10;
-            points = "" + pointsValue;
-            scoreText.text = points;
-            Destroy(other.gameObject);
+            manager.IncrementScore();
+            manager.explode();
+            other.gameObject.SetActive(false);
+            manager.AddCoins(other.gameObject);
        }
     }
 

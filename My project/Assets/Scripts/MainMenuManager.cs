@@ -5,8 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+    public GameManager manager;
+
     public void OnGameStart(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        manager = GameManager.Instance;
+        manager.setScore();
     }
 
     public void OnGameStop(){
