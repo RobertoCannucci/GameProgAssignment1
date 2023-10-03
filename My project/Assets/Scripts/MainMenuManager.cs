@@ -10,7 +10,7 @@ public class MainMenuManager : MonoBehaviour
     public void OnGameStart(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         manager = GameManager.Instance;
-        manager.setScore();
+        manager.RestartScore();
     }
 
     public void OnGameStop(){

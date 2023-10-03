@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject Player;
     public GameObject particleSystemToSpawn;
     public Text scoreText;
+    public Text finalScoreText;
     public int pointsValue = 0;
     public string points;
     public static int previouseScore = 0;
@@ -27,6 +28,10 @@ public class GameManager : MonoBehaviour
         coins = new GameObject[20];
         arrayCountP = 0;
         arrayCountC = 0;
+        if (SceneManager.GetActiveScene().buildIndex == 4){
+            points = "" + previouseScore;
+            finalScoreText.text = points;
+        }
     }
 
     public void AddPowerUp(GameObject powerUp){
@@ -71,7 +76,10 @@ public class GameManager : MonoBehaviour
         scoreText.text = points;
     }
 
-
+    public void RestartScore(){
+        previouseScore = 0;
+        pointsValue = 0;
+    }
 
     public void explode(){
         
