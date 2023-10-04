@@ -27,4 +27,14 @@ public class BlueItemBehaviour : MonoBehaviour
         transform.position = transform.position + movement * speed * Time.deltaTime;
         transform.Rotate(0,0.5f,0*Time.deltaTime);
     }
+
+    public void Hide(){
+        gameObject.SetActive(false);
+        GameManager.Instance.IncrementScore();
+        Invoke("Reset", 30.0F);
+    }
+
+    public void Reset(){
+        gameObject.SetActive(true);
+    }
 }

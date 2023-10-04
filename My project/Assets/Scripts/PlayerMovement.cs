@@ -146,8 +146,12 @@ public class PlayerMovement : MonoBehaviour
        if (other.tag == "DoubleJump"){
             canDoubleJump = true;
             manager.explode();
-            other.gameObject.SetActive(false);
+            //other.gameObject.SetActive(false);
             manager.AddPowerUp(other.gameObject);
+            GameObject powerUp = other.gameObject;
+            BlueItemBehaviour pu = powerUp.GetComponent<BlueItemBehaviour>();
+            pu.Hide();
+            
        }
        if (other.tag == "Point"){
             //Debug.Log("Got a Point");
