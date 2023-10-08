@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RedTrapBehaviour : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class RedTrapBehaviour : MonoBehaviour
     {
         // Debug.Log(Player.transform.position);
         // Debug.Log(ogplayerPosition);
-        Player.transform.position = ogplayerPosition;
+        //Player.transform.position = ogplayerPosition;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
